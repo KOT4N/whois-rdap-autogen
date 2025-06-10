@@ -42,8 +42,6 @@ def main():
             if r[-1] != "/":
                 r += "/"
             rdap[domain] = r
-        else:
-            r = "None"
         logger.info("RDAP: " + r)
 
         w = re.search(r"WHOIS.*?<\/b>\s(.*?)\s", html)
