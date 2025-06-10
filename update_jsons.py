@@ -25,7 +25,7 @@ def main():
 
     for d in domains:
         domain = re.findall(r"db\/(.*?\.html)", d)[0].strip("/").split(".")[0]
-        logger.info("\n" + domain)
+        logger.info(domain)
 
         while True:
             time.sleep(0.5)
@@ -50,7 +50,7 @@ def main():
         w = re.search(r"WHOIS.*?<\/b>\s(.*?)\s", html)
         if w:
             gwhois[domain] = w
-        logger.info("WHOIS: " + r)
+        logger.info("WHOIS: " + r + "\n")
 
     with open("rdap.json", "w") as f:
         json.dump(dict(sorted(grdap.items())), f, indent=4)
