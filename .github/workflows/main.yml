@@ -1,0 +1,27 @@
+name: Update TLD
+
+on:
+  schedule:
+    - cron: '0 0 1 * *' 
+  workflow_dispatch:    
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.13'
+
+      - run: python3 update_jsons.py
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add whois.json
+          git add rdap.json
+          git commit -m "Update JSONs" || echo "No changes"
+          git push
