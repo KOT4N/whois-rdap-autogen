@@ -18,14 +18,16 @@ def req(url: str) -> str:
 
 
 def main():
-    logger.info("Fetching root...")
+    logger.info("Fetching root...\n")
     with urllib.request.urlopen("https://www.iana.org/domains/root/db") as response:
         html = response.read().decode()
         domains = re.findall(r'href="(/domains/root/db/.*?\.html)">', html)
 
-    for d in domains:
+    total = len(domains)
+
+    for i, d in enumerate(domains):
         domain = re.findall(r"db\/(.*?\.html)", d)[0].strip("/").split(".")[0]
-        logger.info(domain)
+        logger.info(f"{domain} ({i+1} of {total})")
 
         while True:
             time.sleep(1)
@@ -42,12 +44,12 @@ def main():
             if r[-1] != "/":
                 r += "/"
             rdap[domain] = r
-        logger.info("RDAP: " + r)
+        logger.info(f"RDAP: {r}")
 
         w = re.search(r"WHOIS.*?<\/b>\s(.*?)\s", html)
         if w:
-            whois[domain] = w
-        logger.info("WHOIS: " + w + "\n")
+            w = whois[domain] = w.group(1)
+        logger.info(f"WHOIS: {w}\n")
 
     with open("rdap.json", "w") as f:
         json.dump(dict(sorted(rdap.items())), f, indent=4)
