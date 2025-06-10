@@ -8,8 +8,8 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("A")
 
-grdap = {}
-gwhois = {}
+rdap = {}
+whois = {}
 
 
 def req(url: str) -> str:
@@ -28,35 +28,34 @@ def main():
         logger.info(domain)
 
         while True:
-            time.sleep(0.5)
+            time.sleep(1)
             try:
                 logger.info("Fetching domain registry...")
                 html = req("https://www.iana.org" + d)
                 break
             except urllib.error.HTTPError as e:
                 logger.error(f"{str(e)} // Retrying...")
-                html = req("https://www.iana.org" + d)
 
         r = re.search(r"RDAP.*?(https://.*?)\n", html)
         if r:
             r = r.group(1)
             if r[-1] != "/":
                 r += "/"
-            grdap[domain] = r
+            rdap[domain] = r
         else:
             r = "None"
         logger.info("RDAP: " + r)
 
         w = re.search(r"WHOIS.*?<\/b>\s(.*?)\s", html)
         if w:
-            gwhois[domain] = w
-        logger.info("WHOIS: " + r + "\n")
+            whois[domain] = w
+        logger.info("WHOIS: " + w + "\n")
 
     with open("rdap.json", "w") as f:
-        json.dump(dict(sorted(grdap.items())), f, indent=4)
+        json.dump(dict(sorted(rdap.items())), f, indent=4)
 
     with open("whois.json", "w") as f:
-        json.dump(dict(sorted(gwhois.items())), f, indent=4)
+        json.dump(dict(sorted(whois.items())), f, indent=4)
 
 
 main()
