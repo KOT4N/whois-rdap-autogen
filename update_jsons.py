@@ -55,9 +55,9 @@ def main():
         json.dump(dict(sorted(rdap.items())), f, indent=4)
 
     with open("whois.json", "w") as f:
+        whois = dict(sorted(whois.items()))
         with open("whois_sld.json") as s:
             whois.update(json.load(s))
-        json.dump(dict(sorted(whois.items())), f, indent=4)
-
+        json.dump(whois, f, indent=4)
 
 main()
