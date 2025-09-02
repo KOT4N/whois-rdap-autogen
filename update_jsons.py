@@ -8,9 +8,6 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("A")
 
-rdap = {}
-whois = {}
-
 
 def req(url: str) -> str:
     with urllib.request.urlopen(url) as response:
@@ -18,6 +15,10 @@ def req(url: str) -> str:
 
 
 def main():
+    rdap = {}
+    with open("whois_sld.json") as s:
+        whois = json.load(s)
+
     logger.info("Fetching root...\n")
     with urllib.request.urlopen("https://www.iana.org/domains/root/db") as response:
         html = response.read().decode()
@@ -56,8 +57,6 @@ def main():
 
     with open("whois.json", "w") as f:
         whois = dict(sorted(whois.items()))
-        with open("whois_sld.json") as s:
-            whois.update(json.load(s))
         json.dump(whois, f, indent=4)
 
 main()
